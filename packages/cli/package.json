@@ -1,6 +1,6 @@
 {
   "name": "nanachi-cli222",
-  "version": "1.0.0",
+  "version": "1.4.10",
   "description": "cli tool for mpreact",
   "bin": {
     "mpreact": "./bin/index.js",
@@ -11,7 +11,6 @@
   },
   "author": "",
   "license": "MIT",
-  "devDependencies": {},
   "dependencies": {
     "axios": "^0.18.0",
     "babel": "^6.23.0",
