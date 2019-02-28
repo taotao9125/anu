@@ -151,6 +151,13 @@ buildCommonds.forEach(function(el){
 });
 
 
+program
+    .command('reverse')
+    .description('description: 微信小程序转nanachi')
+    .action(function(){
+        require('../packages/reverse/index');
+    });
+
 
 program
     .arguments('<command>')
