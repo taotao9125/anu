@@ -7,28 +7,31 @@ class ScrollView extends React.Component {
         this.state = {};
 
         this.onScrollListener = this.onScrollListener.bind(this);
-        if (this.props.bindscrolltoupper) {
-            if (typeof this.props.bindscrolltoupper !== "function") {
+        if (this.props.onScrollToUpper) {
+            if (typeof this.props.onScrollToUpper !== "function") {
                 throw new Error(
-                    `bindscrolltoupper 必须为函数类型`
+                    `onScrollToUpper 必须为函数类型`
                 );
             }
-            this.bindscrolltoupper = this.throttle(this.props.bindscrolltoupper, 150).bind(this);
+            this.onScrollToUpper = this.debounce(this.props.onScrollToUpper, 300, this)
         }
 
-        if (this.props.bindscrolltolower) {
-            if (typeof this.props.bindscrolltolower !== "function") {
+        
+        if (this.props.onScrollToLower) {
+            if (typeof this.props.onScrollToLower !== "function") {
                 throw new Error(
-                    `bindscrolltolower 必须为函数类型`
+                    `onScrollToLower 必须为函数类型`
                 );
             }
-            this.bindscrolltolower = this.throttle(this.props.bindscrolltolower, 150).bind(this);
+            this.onScrollToLower = this.debounce(this.props.onScrollToLower, 300, this);
         }
+
+        console.log(this.props, 1111, '===>props');
 
     }
 
     componentDidMount() {
-        this.scrollable.addEventListener("scroll", this.onScrollListener);
+        this.scrollable.addEventListener("mousewheel", this.onScrollListener);
 
         const scrollY = this.props["scroll-y"];
         const scrollX = this.props["scroll-x"];
@@ -147,6 +150,16 @@ class ScrollView extends React.Component {
         };
     }
 
+    debounce(fn, delay, thisObj) {
+        var timerId = -1;
+        return function(e) {
+            clearTimeout(timerId);
+            timerId = setTimeout(() => {
+                fn.call(thisObj, e)
+            }, delay || 300);  
+        }
+    }
+
     onScrollListener(event) {
         const scrollY = this.props["scroll-y"];
         const scrollX = this.props["scroll-x"];
@@ -171,22 +184,23 @@ class ScrollView extends React.Component {
                 `lower-threshold 只能是 number 或者 string 类型`
             );
         }
-
-        if (scrollY) {
+        console.log('before');
+        if (true) {
             if (upperThreshold && this.scrollable.scrollTop <= upperThreshold) {
-                this.bindscrolltoupper(event);
+                console.log('11');
+                this.onScrollToUpper(event);
             }
 
             if (lowerThreshold && (this.scrollable.scrollTop + this.scrollable.offsetHeight >= this.scrollable.scrollHeight - lowerThreshold)) {
-                this.bindscrolltolower(event);
+                this.onScrollToLower(event);
             }
         } else if (scrollX) {
             if (upperThreshold && this.scrollable.scrollLeft <= upperThreshold) {
-                this.bindscrolltoupper(event);
+                this.onScrollToUpper(event);
             }
 
             if (lowerThreshold && (this.scrollable.scrollLeft + this.scrollable.offsetWidth >= this.scrollable.scrollWidth - lowerThreshold)) {
-                this.bindscrolltolower(event);
+                this.onScrollToLower(event);
             }
         }
     }
@@ -306,8 +320,8 @@ ScrollView.defaultProps = {
     "scroll-y": false,
     "upper-threshold": 50,
     "lower-threshold": 50,
-    "bindscrolltoupper": () => {},
-    "bindscrolltolower": () => {},
+    "onScrollToUpper": () => {},
+    "onScrollToLower": () => {},
     "bindscroll": () => {}
 };
 
